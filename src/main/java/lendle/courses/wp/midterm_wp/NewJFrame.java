@@ -5,6 +5,7 @@
  */
 package lendle.courses.wp.midterm_wp;
 
+import java.awt.FlowLayout;
 import java.awt.Image;
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -15,8 +16,11 @@ import java.util.logging.Logger;
 import javafx.scene.AccessibleAttribute;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.ProgressMonitor;
 import javax.swing.SwingUtilities;
+import javax.swing.Icon;
+import javax.swing.WindowConstants;
 
 /**
  *
@@ -25,12 +29,17 @@ import javax.swing.SwingUtilities;
 public class NewJFrame extends javax.swing.JFrame {
 
     static ProgressDialog progress = null;
+    
 
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
+        DefaultListModel model=new DefaultListModel();
+        jList1.setModel(model);
+        //setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        //setLayout(new FlowLayout());
     }
 
     /**
@@ -101,7 +110,8 @@ public class NewJFrame extends javax.swing.JFrame {
         try {
             jButton1.setEnabled(false);
             //從 combobox 抓出被選到的項目，存到變數裡
-            String selectedItem="";
+            
+            String selectedItem=(String) jComboBox1.getSelectedItem();
             /////////////////////////////////////
             URL url = new URL(selectedItem);
             String fileName = url.getFile();
@@ -118,7 +128,10 @@ public class NewJFrame extends javax.swing.JFrame {
                         progress.setVisible(false);
                         jButton1.setEnabled(true);
                         //將下載好的項目加入到 jList 裡面
-                        
+                        DefaultListModel model=(DefaultListModel) jList1.getModel();
+                        model.addElement(jComboBox1.getSelectedItem());
+                        jList1.updateUI();
+                       
                         ////////////////////////////
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
@@ -127,6 +140,10 @@ public class NewJFrame extends javax.swing.JFrame {
                                     URL fileURL=tempFile.toURI().toURL();
                                     //利用 fileURL 將 image icon 加到 jLabel2
                                     ////////////////////////////////////////
+                                    ImageIcon icon=new ImageIcon(new URL(fileURL));
+                                    
+                                    JLabel label=new JLabel(icon, jLabel2.LEADING);
+                                    jLabel2.updateUI();
                                     jList1.updateUI();
                                 } catch (Exception ex) {
                                     Logger.getLogger(NewJFrame.class.getName()).log(Level.SEVERE, null, ex);
